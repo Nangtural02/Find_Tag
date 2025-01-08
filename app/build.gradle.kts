@@ -74,6 +74,7 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:2.4.2")
 
 
+    implementation ("com.google.code.gson:gson:2.8.8")
     implementation ("com.github.mik3y:usb-serial-for-android:3.8.0")
 
     implementation("io.github.sceneview:sceneview:2.2.1")

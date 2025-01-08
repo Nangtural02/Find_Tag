@@ -21,6 +21,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "ObjectTracking"
+rootProject.name = "Find_Tag"
 include(":app")
  

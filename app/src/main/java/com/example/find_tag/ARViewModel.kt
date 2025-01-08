@@ -1,0 +1,40 @@
+package com.example.find_tag
+
+import android.content.Context
+import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.ViewModel
+import com.google.ar.core.TrackingFailureReason
+import io.github.sceneview.ar.getDescription
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+
+class ARViewModel: ViewModel() {
+    private val _vioText = MutableStateFlow("empty")
+    val vioText: StateFlow<String> = _vioText
+
+    val vioPosition = MutableStateFlow<Point?>(null)
+
+    private val _trackingState = MutableStateFlow<String>("")
+    val trackingState: StateFlow<String> = _trackingState
+    val isChildNodeEmpty = mutableStateOf(true)
+
+    val targetPosition = MutableStateFlow<Point?>(null)
+
+    fun updateVIOText(text: String) {
+        _vioText.value = text
+    }
+    fun updateVIOPosition(groundX: Float, groundY: Float, elevation: Float){
+        vioPosition.value = Point(groundX, groundY, elevation)
+    }
+
+    fun updateTrackingFailureReason(context : Context, reason: TrackingFailureReason?) {
+         reason?.let {
+            _trackingState.value = it.getDescription(context)
+        } ?: if (isChildNodeEmpty.value) {
+             _trackingState.value = "Move phone more"
+        } else {
+             _trackingState.value = "VIO Position Good"
+        }
+    }
+
+}
