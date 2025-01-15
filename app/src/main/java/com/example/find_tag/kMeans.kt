@@ -1,23 +1,25 @@
 package com.example.find_tag
 
-import com.example.find_tag.ui.theme.PandD
 
 // k-means 알고리즘
 fun kMeans(points: List<PandD>, k: Int, maxIterations: Int = 100): List<List<PandD>> {
     if (points.size < k) throw IllegalArgumentException("Number of points must be at least $k")
 
     val centroids = points.shuffled().take(k).map { it.point }.toMutableList()
-    var clusters = List(k) { mutableListOf<PandD>() }
+    var clusters: List<List<PandD>> = List(k) { emptyList<PandD>() }
 
     repeat(maxIterations) {
-        clusters = List(k) { mutableListOf<PandD>() }
+        // 새로운 클러스터 초기화
+        val newClusters = List(k) { mutableListOf<PandD>() }
 
+        // 각 점을 가장 가까운 중심으로 할당
         points.forEach { pandD ->
             val nearestCentroidIndex = centroids.indices.minByOrNull { centroids[it].getDistance(pandD.point) }!!
-            clusters[nearestCentroidIndex].add(pandD)
+            newClusters[nearestCentroidIndex].add(pandD)
         }
 
-        val newCentroids = clusters.mapIndexed { index, cluster ->
+        // 새로운 중심 계산
+        val newCentroids = newClusters.mapIndexed { index, cluster ->
             if (cluster.isNotEmpty()) {
                 cluster.map { it.point }.reduce { acc, point -> acc.add(point) }.div(cluster.size.toFloat())
             } else {
@@ -25,13 +27,19 @@ fun kMeans(points: List<PandD>, k: Int, maxIterations: Int = 100): List<List<Pan
             }
         }
 
-        if (newCentroids == centroids) return@repeat
+        // 중심이 변경되지 않으면 반복 종료
+        if (newCentroids == centroids) return newClusters
+
+        // 중심 업데이트
         centroids.clear()
         centroids.addAll(newCentroids)
+
+        // 클러스터 업데이트
+        clusters = newClusters
     }
+
     return clusters
 }
-
 // 클러스터에서 각 중심과 가장 가까운 PandD 객체 선택
 fun selectRepresentativePoints(clusters: List<List<PandD>>, centroids: List<Point>): List<PandD> {
     return clusters.mapIndexed { index, cluster ->
@@ -39,7 +47,7 @@ fun selectRepresentativePoints(clusters: List<List<PandD>>, centroids: List<Poin
     }
 }
 
-// 최종 함수: k-means로 세 개의 PandD 선택
+// 최종 함수: k-means로 3 개의 PandD 선택
 fun topThreePandDByKMeans(rangingList: List<PandD>): List<PandD> {
     val clusters = kMeans(rangingList, 3)
     val centroids = clusters.map { cluster ->

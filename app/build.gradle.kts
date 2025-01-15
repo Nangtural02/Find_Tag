@@ -4,12 +4,12 @@ plugins {
 }
 
 android {
-    namespace = "com.example.ObjectTracking"
-    compileSdk = 34
+    namespace = "com.example.Find_Tag"
+    compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.example.ObjectTracking"
-        minSdk = 24
+        applicationId = "com.example.Find_Tag"
+        minSdk = 26
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"

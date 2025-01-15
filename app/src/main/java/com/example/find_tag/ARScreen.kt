@@ -2,7 +2,6 @@ package com.example.find_tag
 
 import android.util.Log
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
@@ -67,7 +66,7 @@ fun ARScreen(arViewModel: ARViewModel,modifier:Modifier = Modifier,visibility: B
         var frame by remember { mutableStateOf<Frame?>(null) }
         val context = LocalContext.current
         ARScene(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier,
             childNodes = childNodes,
             engine = engine,
             view = view,
@@ -91,8 +90,9 @@ fun ARScreen(arViewModel: ARViewModel,modifier:Modifier = Modifier,visibility: B
             onSessionUpdated = { _session, updatedFrame ->
                 frame = updatedFrame
                 //todo: VIO!! 여기!!
-                arViewModel.updateVIOText(updatedFrame.camera.pose.toString())
-                arViewModel.updateVIOPosition(updatedFrame.camera.pose.tx(), updatedFrame.camera.pose.tz(), updatedFrame.camera.pose.ty())// VIO 좌표계에서 y는 높이, but Point는 높이를 z로 잡을것.
+                //arViewModel.updateVIOText(updatedFrame.camera.pose.toString())
+                arViewModel.updateVIOPosition(updatedFrame.camera.pose.tx(), updatedFrame.camera.pose.tz(), updatedFrame.camera.pose.ty())
+                // VIO 좌표계에서 y는 높이, but Point는 높이를 z로 잡을것.
                 //
 
                 if (childNodes.isEmpty()) {
@@ -248,6 +248,6 @@ fun createMarkerNode(engine: Engine, modelLoader: ModelLoader): Node {
 }
 
 fun updateMarkerPosition(target: Point, markerNode: Node) {
-    markerNode.position = Position(target.x, target.y+1f, target.z) // 목표 위치에서 2m 위로 설정
+    markerNode.position = Position(target.x, target.y, target.z) // 목표 위치에서 2m 위로 설정
 }
 
